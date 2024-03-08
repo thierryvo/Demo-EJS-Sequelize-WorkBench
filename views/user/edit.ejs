@@ -1,0 +1,149 @@
+<!-- DEMO-SEQ / fichier: views/user/edit.ejs -->
+<!-- (FORMULAIRE UPDATE USER) -------------- -->
+<div class="d-flex justify-content-between flex-wrap flex-md nowrap align-items-center pt-3 pb-2 mb-3 border-bottom">
+  <h1 class="h2">Edition: <%= r_user.nom %> <%= r_user.prenom %></h1>
+  <div class="btn-toolbar mb-2 mb-md 0">
+    <div class="btn-group me-2">
+      <button class="btn btn-sm btn-outline-secondary">?</button>
+    </div>
+  </div>
+</div>
+
+<!-- BLOC haut -->
+<div class="col py-3">
+  <div class="row">
+    <div class="col">
+      <nav aria-label="breadcrumb">
+        <ol class="breadcrumb">
+          <!-- lien retour Acceuil  + nom prénom -->
+          <li class="breadcrumb-item"><a href="<%= urlIndex %>">Dashboard</a></li>
+          <li class="breadcrumb-item active"><%= r_user.nom %> <%= r_user.prenom %></li>
+        </ol>
+      </nav>
+    </div>
+    <div class="col text-end fw-lighter">
+      <b>Dernière mise à jour:  <b class="fw-bold"><%= derniereMAJour %></b>  </b>
+      <b>ID user:</b>  <b class="fw-bold"><%= r_user.id %>  </b>   
+    </div>
+  </div>
+</div>
+
+<!-- MESSGE D 'ERREURS -->
+<!-- SI objet tabDesErreurs : alert-danger messages -->
+<% if(tabDesErreurs != '') { %>
+  <div class="col-8 alert alert-danger alert-dismissible fade show" role="alert">
+    <%= tabDesErreurs[0] %>
+    <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+  </div>
+<% } %>
+
+<!-- FORMULAIRE EDIT USER --------------------------------------------------------------------- -->
+<form action="<%= urlActionEdit %><%= r_user.id %>?_method=PUT" method="POST" name="formEditUser">
+  <!-- id: id caché -->
+  <!-- id: id passe d'origine avant modification, caché -->
+  <input type="hidden" id="id" name="id" value="<%= r_user.id %>">
+  <input type="hidden" id="idpasse" name="idpasse" value="<%= r_user.idpasse %>">  
+
+  <!-- form groupe colonné -->
+  <div class="row form-group mb-4">
+    <!-- nom -->
+    <div class="col">
+      <label for="nom">Nom</label>
+      <input type="text" class="form-control" maxlength="60" 
+             id="nom" name="nom" value="<%= r_user.nom %>" placeholder="nom..." required>
+             <p style="color: red;"><%=(locals.tabDesZones[0]==='O')? 'erreur':''%></p>
+    </div>
+    <!-- prenom -->
+    <div class="col">
+      <label for="prenom">Prenom</label>
+      <input type="text" class="form-control" maxlength="60"
+             id="prenom" name="prenom" value="<%= r_user.prenom %>" placeholder="Prénom..." required>
+             <p style="color: red;"><%=(locals.tabDesZones[1]==='O')? 'erreur':''%></p>
+    </div>
+  </div>
+
+  <!-- form groupe colonné -->
+  <div class="row form-group mb-4">
+    <!-- pseudo -->
+    <div class="col">
+      <label for="pseudo">Pseudo</label>
+      <input type="text" class="form-control" maxlength="10"
+              id="pseudo" name="pseudo" value="<%= r_user.pseudo %>" placeholder="Pseudo..." required>
+              <p style="color: red;"><%=(locals.tabDesZones[2]==='O')? 'erreur':''%></p>
+    </div>
+    <!-- telephone -->
+    <div class="col">
+      <label for="telephone">Telephone</label>
+      <input type="text" class="form-control" maxlength="60"
+             id="telephone" name="telephone" value="<%= r_user.telephone %>" placeholder="Telephone..." required>
+             <p style="color: red;"><%=(locals.tabDesZones[3]==='O')? 'erreur':''%></p>
+    </div>
+  </div>
+
+    <!-- form groupe colonné -->
+    <div class="row form-group mb-4">
+      <!-- email -->
+      <div class="col">
+        <label for="email">Email</label>
+        <input type="text" class="form-control" maxlength="60"
+               id="email" name="email" value="<%= r_user.email %>" placeholder="Email..." required>
+               <p style="color: red;"><%=(locals.tabDesZones[4]==='O')? 'erreur':''%></p>
+      </div>      
+      <!-- passe -->
+      <div class="col">
+        <label for="passe">Passe</label>
+        <input type="text" class="form-control" maxlength="60"
+               id="passe" name="passe" value="<%= r_user.passe %>" placeholder="Passe..." required
+               onKeyUp="validatepasse()">
+               <p style="color: red;"><%=(locals.tabDesZones[5]==='O')? 'erreur':''%></p>
+               <span id="msgp"></span>  
+      </div>
+    </div>
+
+  <!-- detail -->
+  <div class="form-group mb-4">
+      <label for="detail">Détail</label>
+      <textarea class="form-control" cols="30" rows="4" maxlength="200"
+                id="detail" name="detail" placeholder="USer détail..."><%= r_user.detail %></textarea>
+                <p style="color: red;"><%=(locals.tabDesZones[6]==='O')? 'erreur':''%></p>
+  </div>
+
+  <!-- DEUX BOUTONS type (submit ou button) -->
+  <!-- le submit se passe dans: public/js/script.js  fonction: validateFormEditUser() -->   
+  <div class="form-group mb-4">
+    <!-- BOUTONS UPDATE -->
+    <button type="button" class="btn btn-primary" onClick="validateFormEditUser()">METTRE A JOUR le USER</button>
+    <!-- BOUTONS DELETE relié à delteModal -->
+    <button type="button" class="btn btn-danger" 
+            data-bs-toggle="modal" id="deleteButton" data-bs-target="#deleteModal">SUPPRIMER le USER</button>
+    <span id="msgp2" style="color: red;"></span>
+  </div>
+</form>
+<!-- FIN FORMUMAIRE EDIT USER ----------------------------------------------------------------- -->
+
+
+<!-- modal - popup:  CONFIRMATION de SUPPRESSION -->
+<div class="modal fade" tabindex="-1" role="dialog" id="deleteModal">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <div class="modal-title">Vous êtes sur le point de supprimer un USER.</div>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+      <div class="modal-body">
+        <p>
+          Cela supprimera l'enregistrement user de <b class="fw-bold"><%= r_user.nom %> <%= r_user.prenom %></b><br/>
+          Es-tu sûr?
+        </p>
+      </div>
+      <div class="modal-footer">
+        <!-- CLOSE modal -->
+        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+        <!-- FORMULAIRE + BOUTON SUPPRESSION (comfirmation) -->
+        <form action="<%= urlActionDelete %><%= r_user.id %>?_method=DELETE" method="POST" class="position-relative">
+          <button type="submit" class="btn btn-primary">OUI, supprimer le USER</button>
+        </form>
+      </div>
+    </div>
+  </div>
+</div>

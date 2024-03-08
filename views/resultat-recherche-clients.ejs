@@ -1,0 +1,67 @@
+<!-- ESJ02_CRUD / fichier: views/resultat-recherche-clients.ejs -->
+<!-- même principe que acceuil --------- -->
+<div class="d-flex justify-content-between flex-wrap flex-md nowrap align-items-center pt-3 pb-2 mb-3 border-bottom">
+  <h1 class="h2">Résultat recherche Clients</h1>
+  <div class="btn-toolbar mb-2 mb-md 0">
+    <div class="btn-group me-2">    
+      <!-- lien: add client -->
+      <a href="<%= urlSoumettreUnClient %>" class="btn btn-sm btn-outline-secondary">+ ADD CLIENT</a>
+    </div>
+  </div>
+</div>
+
+<div class="table-responsive">
+  <!-- SI tableau existe: tabDeClients -->
+  <% if(locals.tabDeClients && locals.tabDeClients.length) { %>    
+    <!-- tableau -->
+    <table class="table table-striped table-sm">
+      <!-- entête colonne tableau -->
+      <thead>
+        <tr>
+          <th scope="col">NOM</th>
+          <th scope="col">PRENOM</th>
+          <th scope="col">TELEPHONE</th>
+          <th scope="col">EMAIL</th>
+          <th scope="col" class="text-end">ACTION</th>
+        </tr>
+      </thead>
+      <!-- lignes du tableau -->
+      <tbody>
+        <!-- BOUCLE lignes du tableau --------------------------------------------------------- -->
+        <% tabDeClients.forEach(itemClient => { %>
+          <tr class="align-middle">
+            <!-- 4 premières colonnes  -->
+            <td><%= itemClient.nom %></td>
+            <td><%= itemClient.prenom %></td>
+            <td><%= itemClient.telephone %></td>
+            <td><%= itemClient.email %></td>
+
+            <!-- td colonne ACTION -->
+            <td>
+              <div class="d-flex flex-row justify-content-end gap-2">
+                <!-- action lien 1: Vue (Affichage d un client par son ID) -->
+                <a href="<%= urlClientActionView %><%= itemClient._id %>" type="button" class="btn btn-primary btn-small">
+                  <i class="bi bi-eye"></i>
+                </a>
+                <!-- action lien 2: Edit (Modifier un client par son ID) -->
+                <a href="<%= urlClientActionEdit %><%= itemClient._id %>" type="button" class="btn btn-warning btn-small">
+                  <i class="bi bi-pencil"></i>
+                </a>
+                <!-- action lien 3: FORMULAIRE DE SUPPRESSION: d'un client par son ID -->
+                <form action="<%= urlClientActionDelete %><%= itemClient._id %>?_method=DELETE" method="POST" class="position-relative">
+                  <button type="submit" class="btn btn-danger btn-small">
+                    <i class="bi bi-person-x"></i>
+                  </button>
+                </form>
+              </div>
+            </td>
+          </tr>
+        <% }) %>
+        <!-- FIN BOUCLE lignes du tableau ----------------------------------------------------- -->
+      </tbody>
+    </table>
+
+  <% } else { %>
+    <h2>Aucun résultat trouvé.</h2>
+  <% } %>
+</div>
